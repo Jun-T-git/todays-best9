@@ -1,0 +1,10 @@
+version: "3"
+services:
+  app:
+    build: .
+    container_name: beautifulsoup
+    environment:
+      API_KEY: ${API_KEY}
+      API_SECRET_TOKEN: ${API_SECRET_KEY}
+      ACCESS_TOKEN: ${ACCESS_TOKEN}
+      ACCESS_SECRET_TOKEN: ${ACCESS_SECRET_TOKEN}
