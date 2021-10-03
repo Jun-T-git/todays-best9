@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-from operator import mul
 import datetime
 import re
+from operator import mul
 import tweepy
 import sys
 
@@ -19,14 +19,14 @@ def fetch_game_links(date):
 # statsで受け取った成績から総合スコアを計算する
 def calc_batter_score(stats):
   # 打数，　得点，　安打，　打点，　三振，　四球，　死球，　犠打，　盗塁，　失策，　本塁打
-  eval_list = [-0.05, 0, 2, 1.5, 0, 1, 0.5, 0.5, 1, -2, 1.5] # statsの第3要素以降と加重和をとる
+  eval_list = [-0.05, 0, 4, 2.5, 0, 1.5, 1, 1, 1.5, -2, 1] # statsの第3要素以降と加重和をとる
   score = sum(list(map(mul, stats[3:], eval_list)))
   return score
 
 # statsで受け取った成績から総合スコアを計算する
 def calc_pitcher_score(stats):
   # 投球回, 投球数, 打者, 被安打, 被本塁打, 奪三振, 与四球, 与死球, ボーク, 失点, 自責点
-  eval_list = [3, 0, 0, -0.1, -0.1, 0.2, -0.1, -0.1, -0.1, -1, -1.5] # statsの第3要素以降と加重和をとる
+  eval_list = [3, 0, 0, -0.05, -0.05, 0.05, -0.1, -0.05, -0.05, -0.5, -2] # statsの第3要素以降と加重和をとる
   score = sum(list(map(mul, stats[3:], eval_list)))
   return score
 
@@ -125,7 +125,6 @@ def tweet_content_pitcher(date, all_pitcher_stats):
       break
   return content
 
-# ツイートする
 def tweet(tweet_content):
   CK="e7VK69thvuKi32JviHeGQ7v04"
   CS="jmf7pcYqLNpxIe91JlGIMQgQavzFpWjL3FIVNFioxLOPdEAdET"
@@ -140,9 +139,9 @@ def tweet(tweet_content):
 
 if __name__ == '__main__':
   d_today = datetime.date.today()
-  print(d_today)
+  # print(d_today)
   game_links = fetch_game_links(d_today) # 試合リンクの取得
-  print(game_links)
+  # print(game_links)
   all_batter_stats = []
   all_pitcher_stats = []
   for game_link in game_links:
@@ -154,8 +153,8 @@ if __name__ == '__main__':
     pitcher_stats = fetch_pitcher_stats(game_link)
     all_pitcher_stats.extend(pitcher_stats)
     all_pitcher_stats = sorted(all_pitcher_stats, key=lambda x: x[-1], reverse=True)
-  print(all_batter_stats)
-  print(all_pitcher_stats)
+  # print(all_batter_stats)
+  # print(all_pitcher_stats)
   if len(all_batter_stats) == 0 or len(all_pitcher_stats) == 0:
     print("No data")
     sys.exit()
@@ -167,3 +166,7 @@ if __name__ == '__main__':
   tweet(batter_content)
   tweet(pitcher_content)
   print("ツイートしました")
+  # print(best9_stats)
+  # print(tweet_content_best9(d_today, best9_stats))
+  # print(tweet_content_batter(d_today, all_batter_stats))
+  # print(tweet_content_pitcher(d_today, all_pitcher_stats))
